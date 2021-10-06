@@ -29,9 +29,9 @@ namespace Fan.Abp.Ddd.Application.Commands
 
     public class ReturnCustomValueCommandHandle : CommandHandler<ReturnCustomValueCommand, CustomValue>
     {
-        public override Task<CustomValue> HandleCommandAsync(ReturnCustomValueCommand request, CancellationToken cancellationToken)
+        public override Task<CustomValue> HandleCommandAsync(ReturnCustomValueCommand command, CancellationToken cancellationToken)
         {
-            if (request.Content == "Content")
+            if (command.Content == "Content")
             {
                 return Task.FromResult((CustomValue)null);
             }
