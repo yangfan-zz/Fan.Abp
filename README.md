@@ -1,7 +1,7 @@
 # Fan.ABP
 
 # Fan.Abp.Cqrs
-### Add DependsOn Add DependsOn on MyApplicationModule
+### Add **DependsOn** on **MyApplicationModule**
 ````csharp
 [DependsOn(typeof(FanDddApplicationCqrsModule))]
 public class MyApplicationModule : AbpModule
