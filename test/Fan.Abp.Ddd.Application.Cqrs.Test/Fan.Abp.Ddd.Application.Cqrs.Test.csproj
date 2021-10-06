@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="..\..\common.test.props" />
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+	  <RootNamespace />
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Volo.Abp.Autofac" Version="4.3.3" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\src\Fan.Abp.Cqrs.MediatR\Fan.Abp.Cqrs.MediatR.csproj" />
+	  <ProjectReference Include="..\..\src\Fan.Abp.Ddd.Application.Cqrs\Fan.Abp.Ddd.Application.Cqrs.csproj" />
+	  <ProjectReference Include="..\FanTestBase\FanTestBase.csproj" />
+	</ItemGroup>
+
+</Project>
