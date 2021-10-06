@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Version>0.1.3.1</Version>
+    <NoWarn>$(NoWarn);CS1591;CS0436</NoWarn>
+    <Authors>Yan Fan</Authors>
+    <Company>Yan Fan</Company>
+    <PackageProjectUrl>https://github.com/yangfan-zz/Fan.Abp.git</PackageProjectUrl>
+    <Description>Yan.ABP</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3" PrivateAssets="All" />
+  </ItemGroup>
+
+</Project>
