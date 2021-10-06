@@ -83,7 +83,7 @@ public class MyAppService : ApplicationService
         return _commandsExecutor.ExecuteAsync(command);
     }
 
-    public Task ReturnIntAsync(ReturnIntCommand command)
+    public Task<int> ReturnIntAsync(ReturnIntCommand command)
     {
         return _commandsExecutor.ExecuteAsync(command);
     }
