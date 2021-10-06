@@ -9,7 +9,7 @@ public class MyApplicationModule : AbpModule
        
 }
 ````
-### Add NoReturnValueCommand
+### Add **NoReturnValueCommand** And **NoReturnValueCommandHandle**
 ````csharp
 using Fan.Abp.Ddd.Application.CommandHandlers;
 
@@ -20,10 +20,6 @@ public class NoReturnValueCommand : Command
 
     public int ExecuteCount { get; set; }
 }
-````
-### Add NoReturnValueCommandHandle
-````csharp
-using Fan.Abp.Ddd.Application.CommandHandlers;
 
 public class NoReturnValueCommandHandle : CommandHandler<NoReturnValueCommand>
 {
@@ -34,7 +30,9 @@ public class NoReturnValueCommandHandle : CommandHandler<NoReturnValueCommand>
         return Task.CompletedTask;
     }
 }
+
 ````
+
 
 ###  ICommandsExecutor
 
