@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="..\..\configureawait.props" />
+	<Import Project="..\..\common.props" />
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+	<RootNamespace></RootNamespace>
+  </PropertyGroup>
+	<ItemGroup>
+    <ProjectReference Include="..\Fan.Abp.Cqrs\Fan.Abp.Cqrs.csproj" />
+    <ProjectReference Include="..\Fan.Abp.MediatR\Fan.Abp.MediatR.csproj" />
+  </ItemGroup>
+
+</Project>
