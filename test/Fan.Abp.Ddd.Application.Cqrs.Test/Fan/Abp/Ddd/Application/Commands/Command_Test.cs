@@ -15,11 +15,11 @@ namespace Fan.Abp.Ddd.Application.Commands
     /// </summary>
     public class Command_Test : AbpIntegratedTest<FanDddApplicationCqrsTestModule>
     {
-        private readonly ICommandsExecutor _commandSender;
+        private readonly ICommandsExecutor _commandsExecutor;
 
         public Command_Test()
         {
-            _commandSender = ServiceProvider.GetRequiredService<ICommandsExecutor>();
+            _commandsExecutor = ServiceProvider.GetRequiredService<ICommandsExecutor>();
         }
 
         protected override void SetAbpApplicationCreationOptions(AbpApplicationCreationOptions options)
@@ -36,7 +36,7 @@ namespace Fan.Abp.Ddd.Application.Commands
         {
             var exception = await Assert.ThrowsAsync<AbpValidationException>(async () =>
             {
-                await _commandSender.ExecuteAsync(new NoReturnValueCommand());
+                await _commandsExecutor.ExecuteAsync(new NoReturnValueCommand());
             });
 
             exception.ValidationErrors.ShouldContain(e => e.MemberNames.Contains(nameof(NoReturnValueCommand.Content)));
@@ -51,7 +51,7 @@ namespace Fan.Abp.Ddd.Application.Commands
         public async Task CommandHandle_NoReturnValue()
         {
             var command = new NoReturnValueCommand("Context");
-            await _commandSender.ExecuteAsync(command);
+            await _commandsExecutor.ExecuteAsync(command);
 
             // 执行次数
             command.ExecuteCount.ShouldBe(1);
@@ -65,7 +65,7 @@ namespace Fan.Abp.Ddd.Application.Commands
         public async Task CommandHandle_ReturnIntCommand()
         {
             var command = new ReturnIntCommand("Context");
-            var result = await _commandSender.ExecuteAsync(command);
+            var result = await _commandsExecutor.ExecuteAsync(command);
 
             // 执行次数
             result.ShouldBe(1);
@@ -79,7 +79,7 @@ namespace Fan.Abp.Ddd.Application.Commands
         public async Task CommandHandle_ReturnCustomValueCommand()
         {
             var command = new ReturnCustomValueCommand("Context");
-            var result = await _commandSender.ExecuteAsync(command);
+            var result = await _commandsExecutor.ExecuteAsync(command);
 
             // 执行次数
             result.Value.ShouldBe(1);
@@ -94,7 +94,7 @@ namespace Fan.Abp.Ddd.Application.Commands
         {
             var command = new CreatePostCommand<PostDto> {Id = 100, Title = "CreatePostCommand"};
 
-            var result = await _commandSender.ExecuteAsync(command);
+            var result = await _commandsExecutor.ExecuteAsync(command);
 
             result.Title.ShouldBe("CreatePostCommand");
         }

@@ -44,16 +44,16 @@ using Fan.Abp.Ddd.Application.CommandHandlers;
 [Authorize]
 public class MyAppService : ApplicationService
 {
-    private readonly ICommandsExecutor _commandSender;
+    private readonly ICommandsExecutor _commandsExecutor;
     
-    public MyAppService(ICommandsExecutor commandSender)
+    public MyAppService(ICommandsExecutor commandsExecutor)
     {
-        _commandSender = commandSender;
+        _commandsExecutor = commandsExecutor;
     }
 
     public Task NoReturnValueAsync(NoReturnValueCommand command)
     {
-        return _commandSender.ExecuteAsync(command);
+        return _commandsExecutor.ExecuteAsync(command);
     }
 }
 
