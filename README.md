@@ -9,7 +9,7 @@ public class MyApplicationModule : AbpModule
        
 }
 ````
-### Add **NoReturnValueCommand** And **NoReturnValueCommandHandle**
+### Add **NoReturnValueCommand** and **NoReturnValueCommandHandle**
 ````csharp
 using Fan.Abp.Ddd.Application.CommandHandlers;
 
@@ -33,6 +33,35 @@ public class NoReturnValueCommandHandle : CommandHandler<NoReturnValueCommand>
 
 ````
 
+### Add **ReturnIntCommand** and **ReturnIntCommandHandle**
+````csharp
+using Fan.Abp.Ddd.Application.CommandHandlers;
+
+public class ReturnIntCommand : Command<int>
+{
+    public ReturnIntCommand(string content)
+    {
+        Content = content;
+    }
+
+    [Required]
+    public string Content { get; }
+}
+
+public class ReturnIntCommandHandle : CommandHandler<ReturnIntCommand, int>
+{
+    public override Task<int> HandleCommandAsync(ReturnIntCommand request, CancellationToken cancellationToken)
+    {
+        if (request.Content == "Content")
+        {
+            return Task.FromResult(0);
+        }
+
+        return Task.FromResult(1);
+    }
+}
+
+````
 
 ###  ICommandsExecutor
 
@@ -50,6 +79,11 @@ public class MyAppService : ApplicationService
     }
 
     public Task NoReturnValueAsync(NoReturnValueCommand command)
+    {
+        return _commandsExecutor.ExecuteAsync(command);
+    }
+
+    public Task ReturnIntAsync(ReturnIntCommand command)
     {
         return _commandsExecutor.ExecuteAsync(command);
     }

@@ -13,9 +13,6 @@ namespace Fan.Abp.Ddd.Application.Commands
             Content = content;
         }
 
-        /// <summary>
-        /// 命令内容
-        /// </summary>
         [Required]
         public string Content { get; }
     }
