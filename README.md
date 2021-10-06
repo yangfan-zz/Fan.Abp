@@ -1,7 +1,7 @@
 # Fan.ABP
 
 # Fan.Abp.Cqrs
-### Add DependsOn
+### Add DependsOn Add DependsOn on MyApplicationModule
 ````csharp
 [DependsOn(typeof(FanDddApplicationCqrsModule))]
 public class MyApplicationModule : AbpModule
@@ -42,7 +42,7 @@ public class NoReturnValueCommandHandle : CommandHandler<NoReturnValueCommand>
 using Fan.Abp.Ddd.Application.CommandHandlers;
 
 [Authorize]
-public class MyAppService : ApplicationService, IAuthorAppService
+public class MyAppService : ApplicationService
 {
     private readonly ICommandsExecutor _commandSender;
     
