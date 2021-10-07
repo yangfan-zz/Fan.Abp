@@ -20,19 +20,13 @@ namespace Fan.Abp.EventBus.Local
         /// <summary>
         /// 
         /// </summary>
-        private readonly IPublisher _publisher;
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="options"></param>
         /// <param name="serviceScopeFactory"></param>
         /// <param name="currentTenant"></param>
-        /// <param name="publisher"></param>
         public MediatRLocalEventBus(IOptions<AbpLocalEventBusOptions> options, IServiceScopeFactory serviceScopeFactory,
-            ICurrentTenant currentTenant, IPublisher publisher) : base(options, serviceScopeFactory, currentTenant)
+            ICurrentTenant currentTenant) : base(options, serviceScopeFactory, currentTenant)
         {
-            _publisher = publisher;
+
         }
 
         /// <summary>
@@ -48,7 +42,8 @@ namespace Fan.Abp.EventBus.Local
             {
                 try
                 {
-                    await _publisher.Publish(eventData);
+                    using var scope = ServiceScopeFactory.CreateScope();
+                    await scope.ServiceProvider.GetService<IPublisher>().Publish(eventData);
                 }
                 catch (TargetInvocationException ex)
                 {
