@@ -10,7 +10,7 @@ namespace Fan.Abp.Cqrs
     {
         public override void PreConfigureServices(ServiceConfigurationContext context)
         {
-            context.Services.AddConventionalRegistrar(new FanMediatRConventionalRegistrar());
+            context.Services.AddConventionalRegistrar(new MediatRCqrsConventionalRegistrar());
         }
     }
 }

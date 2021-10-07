@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+	  <RootNamespace />
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+   
+	    <PackageReference Include="Volo.Abp.Autofac" Version="4.3.3" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Fan.Abp.EventBus.MediatR\Fan.Abp.EventBus.MediatR.csproj" />
+    <ProjectReference Include="..\FanTestBase\FanTestBase.csproj" />
+  </ItemGroup>
+
+</Project>

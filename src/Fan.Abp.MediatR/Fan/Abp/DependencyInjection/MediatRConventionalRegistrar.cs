@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Fan.Abp.Cqrs.Commands;
-using Fan.Abp.Cqrs.Queries;
+using MediatR;
+using MediatR.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Volo.Abp.DependencyInjection;
@@ -13,23 +13,16 @@ namespace Fan.Abp.DependencyInjection
     /// <summary>
     /// https://github.com/jbogard/MediatR.Extensions.Microsoft.DependencyInjection/blob/master/src/MediatR.Extensions.Microsoft.DependencyInjection/Registration/ServiceRegistrar.cs
     /// </summary>
-    public class FanMediatRConventionalRegistrar : ConventionalRegistrarBase
+    public class MediatRConventionalRegistrar : ConventionalRegistrarBase
     {
         public override void AddAssembly(IServiceCollection services, Assembly assembly)
         {
-            Type[] types = assembly.DefinedTypes
-                .Where(
-                    type => type is {IsClass: true, IsAbstract: false}
-                )
-                .Where(type =>
-                    typeof(ICommandHandler).GetTypeInfo().IsAssignableFrom(type) ||
-                    typeof(IQueryHandler).GetTypeInfo().IsAssignableFrom(type)
-                )
-                .ToArray();
+            var types = assembly.DefinedTypes.Where(type => type is {IsClass: true, IsAbstract: false}).ToArray();
 
             if (types.Any())
             {
                 AddTypes(services, types);
+                AddOpenGenericTypes(services, types);
             }
         }
 
@@ -37,11 +30,35 @@ namespace Fan.Abp.DependencyInjection
         {
             types = types.Where(t => !t.IsOpenGeneric()).ToArray();
 
-            var commandHandlers = types.Where(type=> typeof(ICommandHandler).GetTypeInfo().IsAssignableFrom(type)).ToArray();
-            ConnectImplementationsToTypesClosing(typeof(ICommandHandler<,>), services, commandHandlers, false);
+            ConnectImplementationsToTypesClosing(typeof(IRequestHandler<,>), services, types, false);
+            ConnectImplementationsToTypesClosing(typeof(INotificationHandler<>), services, types, true);
+            ConnectImplementationsToTypesClosing(typeof(IRequestPreProcessor<>), services, types, true);
+            ConnectImplementationsToTypesClosing(typeof(IRequestPostProcessor<,>), services, types, true);
+            ConnectImplementationsToTypesClosing(typeof(IRequestExceptionHandler<,,>), services, types, true);
+            ConnectImplementationsToTypesClosing(typeof(IRequestExceptionAction<,>), services, types, true);
+        }
 
-            var queryHandlers = types.Where(type => typeof(IQueryHandler).GetTypeInfo().IsAssignableFrom(type)).ToArray();
-            ConnectImplementationsToTypesClosing(typeof(IQueryHandler<,>), services, queryHandlers, false);
+        public void AddOpenGenericTypes(IServiceCollection services, params Type[] types)
+        {
+            foreach (var multiOpenInterface in new[]
+            {
+                typeof(INotificationHandler<>),
+                typeof(IRequestPreProcessor<>),
+                typeof(IRequestPostProcessor<,>),
+                typeof(IRequestExceptionHandler<,,>),
+                typeof(IRequestExceptionAction<,>)
+            })
+            {
+                var concretions = types
+                    .Where(type => type.FindInterfacesThatClose(multiOpenInterface).Any())
+                    .Where(type => type.IsConcrete() && type.IsOpenGeneric())
+                    .ToList();
+
+                foreach (var type in concretions)
+                {
+                    AddType(services, multiOpenInterface, type);
+                }
+            }
         }
 
         #region AddType
@@ -72,7 +89,8 @@ namespace Fan.Abp.DependencyInjection
         /// <param name="services"></param>
         /// <param name="types"></param>
         /// <param name="addIfAlreadyExists"></param>
-        private void ConnectImplementationsToTypesClosing(Type openRequestInterface, IServiceCollection services, Type[] types, bool addIfAlreadyExists)
+        protected void ConnectImplementationsToTypesClosing(Type openRequestInterface, IServiceCollection services,
+            Type[] types, bool addIfAlreadyExists)
         {
             var concretions = new List<Type>();
             var interfaces = new List<Type>();
@@ -144,7 +162,8 @@ namespace Fan.Abp.DependencyInjection
             return false;
         }
 
-        private void AddConcretionsThatCouldBeClosed(Type @interface, List<Type> concretions, IServiceCollection services)
+        private void AddConcretionsThatCouldBeClosed(Type @interface, List<Type> concretions,
+            IServiceCollection services)
         {
             foreach (var type in concretions
                 .Where(x => x.IsOpenGeneric() && x.CouldCloseTo(@interface)))

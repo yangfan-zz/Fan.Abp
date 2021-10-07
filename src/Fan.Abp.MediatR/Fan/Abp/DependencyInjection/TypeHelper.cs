@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Fan.Abp.DependencyInjection
 {
-    internal static class TypeHelper
+    public static class TypeHelper
     {
         internal static bool CouldCloseTo(this Type openConcretion, Type closedInterface)
         {
@@ -30,7 +30,7 @@ namespace Fan.Abp.DependencyInjection
             return !type.GetTypeInfo().IsAbstract && !type.GetTypeInfo().IsInterface;
         }
 
-        internal static bool IsOpenGeneric(this Type type)
+        public static bool IsOpenGeneric(this Type type)
         {
             return type.GetTypeInfo().IsGenericTypeDefinition || type.GetTypeInfo().ContainsGenericParameters;
         }

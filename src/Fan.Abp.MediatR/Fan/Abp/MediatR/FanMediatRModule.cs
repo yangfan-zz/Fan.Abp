@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Fan.Abp.DependencyInjection;
+using MediatR;
 using MediatR.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -8,6 +9,11 @@ namespace Fan.Abp.MediatR
 {
     public class FanMediatRModule : AbpModule
     {
+        public override void PreConfigureServices(ServiceConfigurationContext context)
+        {
+            context.Services.AddConventionalRegistrar(new MediatRConventionalRegistrar());
+        }
+
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
             AddRequiredServices(context.Services, ServiceLifetime.Transient);
