@@ -1,5 +1,4 @@
 ﻿using Fan.Abp.Cqrs.Commands;
-using Fan.Abp.Ddd.Application.Commands;
 
 namespace Fan.Abp.Ddd.Application.CommandHandlers
 {

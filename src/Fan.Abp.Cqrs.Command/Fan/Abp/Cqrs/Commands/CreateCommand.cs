@@ -1,6 +1,4 @@
-﻿using Fan.Abp.Cqrs.Commands;
-
-namespace Fan.Abp.Ddd.Application.Commands
+﻿namespace Fan.Abp.Cqrs.Commands
 {
     public abstract class CreateCommand<TKey, TResult> : Command<TResult>, ICreateCommand<TKey, TResult>
     {

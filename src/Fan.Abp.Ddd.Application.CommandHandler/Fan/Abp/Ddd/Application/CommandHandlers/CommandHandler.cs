@@ -2,16 +2,10 @@
 using System.Threading.Tasks;
 using Fan.Abp.Cqrs;
 using Fan.Abp.Cqrs.Commands;
-using Volo.Abp.Application.Services;
 
 namespace Fan.Abp.Ddd.Application.CommandHandlers
 {
-    public abstract class CommandHandler : ApplicationService, ICommandHandler
-    {
-
-    }
-
-    public abstract class CommandHandler<TCommand, TResult> : CommandHandler, ICommandHandler<TCommand, TResult>
+    public abstract class CommandHandler<TCommand, TResult> : ApplicationCommandHandlerBase, ICommandHandler<TCommand, TResult>
         where TCommand : ICommand<TResult>
     {
         public virtual Task<TResult> HandleAsync(TCommand command, CancellationToken cancellationToken) =>
@@ -20,7 +14,7 @@ namespace Fan.Abp.Ddd.Application.CommandHandlers
         public abstract Task<TResult> HandleCommandAsync(TCommand command, CancellationToken cancellationToken);
     }
 
-    public abstract class CommandHandler<TCommand> : CommandHandler, ICommandHandler<TCommand>
+    public abstract class CommandHandler<TCommand> : ApplicationCommandHandlerBase, ICommandHandler<TCommand>
         where TCommand : ICommand
     {
         public virtual async Task<Void> HandleAsync(TCommand command, CancellationToken cancellationToken)
