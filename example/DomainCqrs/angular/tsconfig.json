@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.prod.json",
+  "compilerOptions": {
+    "paths": {
+      "@domain-cqrs": [
+        "projects/domain-cqrs/src/public-api.ts"
+      ],
+      "@domain-cqrs/config": [
+        "projects/domain-cqrs/config/src/public-api.ts"
+      ],
+      "@proxy": ["projects/domain-cqrs/src/lib/proxy/index.ts"],
+      "@proxy/*": ["projects/domain-cqrs/src/lib/proxy/*"]
+    }
+  }
+}

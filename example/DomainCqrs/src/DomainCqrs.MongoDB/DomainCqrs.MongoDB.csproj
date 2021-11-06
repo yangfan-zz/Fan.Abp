@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>DomainCqrs</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.MongoDB" Version="4.4.3" />
+    <ProjectReference Include="..\DomainCqrs.Domain\DomainCqrs.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
