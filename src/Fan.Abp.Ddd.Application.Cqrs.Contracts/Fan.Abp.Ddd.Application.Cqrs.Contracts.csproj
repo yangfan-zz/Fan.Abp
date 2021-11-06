@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fan.Abp.Cqrs.Command\Fan.Abp.Cqrs.Command.csproj" />
+    <ProjectReference Include="..\Fan.Abp.Ddd.Application.Query\Fan.Abp.Ddd.Application.Query.csproj" />
   </ItemGroup>
 
 </Project>

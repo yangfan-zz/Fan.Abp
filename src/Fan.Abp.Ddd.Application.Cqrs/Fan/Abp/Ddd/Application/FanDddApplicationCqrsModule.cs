@@ -1,11 +1,11 @@
 ﻿using Fan.Abp.Ddd.Application.CommandHandlers;
-using Volo.Abp.Application;
+using Fan.Abp.Ddd.Application.QueryHandlers;
 using Volo.Abp.Modularity;
 
 namespace Fan.Abp.Ddd.Application
 {
     [DependsOn(typeof(FanDddApplicationCqrsContractsModule), typeof(FanDddApplicationCommandHandlerModule),
-        typeof(AbpDddApplicationModule))]
+        typeof(FanDddApplicationQueryHandlersModule))]
     public class FanDddApplicationCqrsModule : AbpModule
     {
 

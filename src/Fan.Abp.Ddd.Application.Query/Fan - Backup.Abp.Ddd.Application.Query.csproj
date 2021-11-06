@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\..\configureawait.props" />
+	<Import Project="..\..\common.props" />
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace></RootNamespace>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Volo.Abp.Ddd.Application.Contracts" Version="4.3.3" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Fan.Abp.Cqrs.Command\Fan.Abp.Cqrs.Command.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Fan\Abp\Ddd\Application\新文件夹\" />
+	</ItemGroup>
+
+</Project>

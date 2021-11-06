@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Fan.Abp.Ddd.Application.CommandHandler\Fan.Abp.Ddd.Application.CommandHandler.csproj" />
     <ProjectReference Include="..\Fan.Abp.Ddd.Application.Cqrs.Contracts\Fan.Abp.Ddd.Application.Cqrs.Contracts.csproj" />
+    <ProjectReference Include="..\Fan.Abp.Ddd.Application.QueryHandler\Fan.Abp.Ddd.Application.QueryHandler.csproj" />
   </ItemGroup>
 
 </Project>
