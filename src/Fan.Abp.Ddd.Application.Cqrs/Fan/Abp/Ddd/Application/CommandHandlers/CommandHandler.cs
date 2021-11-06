@@ -2,13 +2,11 @@
 using System.Threading.Tasks;
 using Fan.Abp.Cqrs;
 using Fan.Abp.Cqrs.Commands;
-using Volo.Abp.Uow;
-using Volo.Abp.Validation;
+using Volo.Abp.Application.Services;
 
 namespace Fan.Abp.Ddd.Application.CommandHandlers
 {
-    public abstract class CommandHandler : ICommandHandler, IValidationEnabled,
-        IUnitOfWorkEnabled
+    public abstract class CommandHandler : ApplicationService, ICommandHandler
     {
 
     }

@@ -1,31 +1,21 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Fan.Abp.Ddd.Application.Commands;
+﻿using Fan.Abp.Ddd.Application.Commands;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
 
 namespace Fan.Abp.Ddd.Application.CommandHandlers
 {
-    public abstract class CreateCommandHandler<TCommand, TResult> : CommandHandler,
+    public abstract class CreateCommandHandler<TCommand, TResult> : CommandHandler<TCommand, TResult>,
         ICreateCommandHandler<TCommand, TResult>
         where TCommand : ICreateCommand<TResult>
     {
-        public virtual Task<TResult> HandleAsync(TCommand request, CancellationToken cancellationToken) =>
-            HandleCommandAsync(request, cancellationToken);
-        
-        public abstract Task<TResult> HandleCommandAsync(TCommand command, CancellationToken cancellationToken);
+
     }
 
     public abstract class CreateCommandHandler<TEntity, TCommand, TResult> : CreateCommandHandler<TCommand, TResult>
         where TCommand : ICreateCommand<TResult>
         where TEntity : class, IEntity
     {
-        protected CreateCommandHandler(IRepository<TEntity> repository)
-        {
-            Repository = repository;
-        }
-
-        protected IRepository<TEntity> Repository { get; }
+        protected IRepository<TEntity> Repository => LazyServiceProvider.LazyGetRequiredService<IRepository<TEntity>>();
     }
 
 
@@ -35,11 +25,8 @@ namespace Fan.Abp.Ddd.Application.CommandHandlers
         where TCommand : ICreateCommand<TKey, TResult>
         where TEntity : class, IEntity<TKey>
     {
-        protected CreateCommandHandler(IRepository<TEntity, TKey> repository)
-        {
-            Repository = repository;
-        }
 
-        protected IRepository<TEntity, TKey> Repository { get; }
+        protected IRepository<TEntity, TKey> Repository =>
+            LazyServiceProvider.LazyGetRequiredService<IRepository<TEntity, TKey>>();
     }
 }

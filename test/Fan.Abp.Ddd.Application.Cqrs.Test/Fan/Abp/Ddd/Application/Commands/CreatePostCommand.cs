@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Fan.Abp.Ddd.Application.CommandHandlers;
 using Fan.Abp.Ddd.Application.Posts;
 using Volo.Abp.Application.Dtos;
-using Volo.Abp.Domain.Repositories;
 
 namespace Fan.Abp.Ddd.Application.Commands
 {
@@ -21,11 +20,6 @@ namespace Fan.Abp.Ddd.Application.Commands
     public class CreatePostCommandHandler<TResult> : CreateCommandHandler<Post, int, CreatePostCommand<TResult>, TResult>
     where TResult : PostDto
     {
-        public CreatePostCommandHandler(IRepository<Post, int> repository) : base(repository)
-        {
-
-        }
-
         public override async Task<TResult> HandleCommandAsync(CreatePostCommand<TResult> request, CancellationToken cancellationToken)
         {
             var entity = await Repository.InsertAsync(new Post(request.Id, request.Title), cancellationToken: cancellationToken);
