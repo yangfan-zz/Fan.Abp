@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fan.Abp.Ddd.Application.Que
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fan.Abp.Ddd.Application.QueryHandler", "src\Fan.Abp.Ddd.Application.QueryHandler\Fan.Abp.Ddd.Application.QueryHandler.csproj", "{3D2DD3DC-6AAC-4D25-AF72-54879B1895BD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{1D951F40-EC30-4F05-8677-8DB9BE5B37E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
