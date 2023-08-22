@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+	  <AssemblyName>Fan.Abp.FreeSql</AssemblyName>
+	  <PackageId>Fan.Abp.FreeSql</PackageId>
+	  <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+	  <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+	  <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+	  <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+	  <RootNamespace />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FreeSql.DbContext" Version="3.2.700" />
+    <PackageReference Include="Volo.Abp.Ddd.Domain" Version="7.3.2" />
+    <PackageReference Include="Volo.Abp.Json" Version="7.3.2" />
+  </ItemGroup>
+
+</Project>
