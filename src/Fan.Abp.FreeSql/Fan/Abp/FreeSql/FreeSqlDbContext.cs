@@ -9,28 +9,17 @@ using Volo.Abp.DependencyInjection;
 
 namespace Fan.Abp.FreeSql
 {
-    public abstract class FreeSqlDbContext: IFreeSqlDbContext
+    public abstract class FreeSqlDbContext: DbContext, IFreeSqlDbContext
     {
         private DatabaseFacade? _database;
 
         public IAbpLazyServiceProvider LazyServiceProvider { get; set; }
 
-        protected virtual DbContext Context => LazyServiceProvider.LazyGetRequiredService<IFreeSql>().CreateDbContext();
+        protected virtual IFreeSql FreeSql => LazyServiceProvider.LazyGetRequiredService<IFreeSql>();
 
         public virtual DatabaseFacade Database
         {
-            get { return this._database ??= new DatabaseFacade(Context); }
-        }
-
-
-        public virtual int SaveChanges()
-        {
-           return Context.SaveChanges();
-        }
-
-        public virtual Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            return Context.SaveChangesAsync(cancellationToken);
+            get { return this._database ??= new DatabaseFacade(this); }
         }
 
         public void Initialize(FreeSqlDbContextInitializationContext initializationContext)

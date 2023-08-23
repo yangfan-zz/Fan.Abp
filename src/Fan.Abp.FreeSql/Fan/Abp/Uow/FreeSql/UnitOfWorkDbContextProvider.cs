@@ -69,6 +69,11 @@ namespace Fan.Abp.Uow.FreeSql
             return (TDbContext)((FreeSqlDatabaseApi)databaseApi).DbContext;
         }
 
+        public TDbContext GetDbContext()
+        {
+            return GetDbContextAsync().Result;
+        }
+
         private async Task<TDbContext> CreateDbContextAsync(IUnitOfWork unitOfWork, string connectionStringName, string connectionString)
         {
             var creationContext = new DbContextCreationContext(connectionStringName, connectionString);

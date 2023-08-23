@@ -6,5 +6,7 @@ namespace Fan.Abp.FreeSql
         where TDbContext : IFreeSqlDbContext
     {
         Task<TDbContext> GetDbContextAsync();
+
+        TDbContext GetDbContext();
     }
 }
