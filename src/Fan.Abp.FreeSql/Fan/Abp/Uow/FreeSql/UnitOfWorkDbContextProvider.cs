@@ -36,8 +36,7 @@ namespace Fan.Abp.Uow.FreeSql
             ConnectionStringResolver = connectionStringResolver;
             CancellationTokenProvider = cancellationTokenProvider;
             CurrentTenant = currentTenant;
-          
-
+            
             Logger = NullLogger<UnitOfWorkDbContextProvider<TDbContext>>.Instance;
         }
 
@@ -49,7 +48,7 @@ namespace Fan.Abp.Uow.FreeSql
                 throw new AbpException("A FreeSqlDbContext can only be created inside a unit of work!");
             }
 
-            var targetDbContextType = typeof(TDbContext); // TODO 临时使用
+            var targetDbContextType = typeof(TDbContext); // TODO 未完全适配 ABP EfCore 模式
             var connectionStringName = ConnectionStringNameAttribute.GetConnStringName(targetDbContextType);
             var connectionString = await ResolveConnectionStringAsync(connectionStringName);
 
@@ -102,7 +101,7 @@ namespace Fan.Abp.Uow.FreeSql
 
         private async Task<TDbContext> CreateDbContextWithTransactionAsync(IUnitOfWork unitOfWork)
         {
-            var transactionApiKey = $"EntityFrameworkCore_{DbContextCreationContext.Current.ConnectionString}";
+            var transactionApiKey = $"FreeSql_{DbContextCreationContext.Current.ConnectionString}";
             var activeTransaction = unitOfWork.FindTransactionApi(transactionApiKey) as FreeSqlTransactionApi;
 
             if (activeTransaction == null)

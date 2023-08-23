@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -16,12 +17,18 @@ namespace Fan.Abp.Domain.Repositories.FreeSql
         where TDbContext : IFreeSqlDbContext
         where TEntity : class, IEntity
     {
-        private readonly IDbContextProvider<TDbContext> _dbContextProvider;
-
-        #region GetDbContext
+        #region DbContext GetDbContext GetDbContextAsync 
 
         [Obsolete("Use GetDbContextAsync() method.")]
         protected virtual TDbContext DbContext => GetDbContext();
+
+        [Obsolete("Use GetDbContextAsync() method.")]
+        DbContext IFreeSqlRepository<TEntity>.DbContext => GetDbContext() as DbContext;
+
+        async Task<DbContext> IFreeSqlRepository<TEntity>.GetDbContextAsync()
+        {
+            return await GetDbContextAsync() as DbContext;
+        }
 
         [Obsolete("Use GetDbContextAsync() method.")]
         private TDbContext GetDbContext()
@@ -37,25 +44,6 @@ namespace Fan.Abp.Domain.Repositories.FreeSql
 
             return _dbContextProvider.GetDbContext();
         }
-        #endregion
-
-        #region GetDbSetAsync
-
-
-        [Obsolete("Use GetDbSetAsync() method.")]
-        public virtual DbSet<TEntity> DbSet => DbContext.Set<TEntity>();
-
-        async Task<DbContext> IFreeSqlRepository<TEntity>.GetDbContextAsync()
-        {
-            return await GetDbContextAsync() as DbContext;
-        }
-        Task<DbSet<TEntity>> IFreeSqlRepository<TEntity>.GetDbSetAsync()
-        {
-            return GetDbSetAsync();
-        }
-
-        #endregion
-
 
         protected virtual Task<TDbContext> GetDbContextAsync()
         {
@@ -70,10 +58,42 @@ namespace Fan.Abp.Domain.Repositories.FreeSql
 
             return _dbContextProvider.GetDbContextAsync();
         }
+
+        #endregion
+
+        #region DbSet GetDbSetAsync
+
+        [Obsolete("Use GetDbSetAsync() method.")]
+        public virtual DbSet<TEntity> DbSet => DbContext.Set<TEntity>();
+
+        Task<DbSet<TEntity>> IFreeSqlRepository<TEntity>.GetDbSetAsync()
+        {
+            return GetDbSetAsync();
+        }
+
         protected async Task<DbSet<TEntity>> GetDbSetAsync()
         {
             return (await GetDbContextAsync()).Set<TEntity>();
         }
+
+        #endregion
+
+        #region GetDbConnectionAsync
+
+        protected async Task<IDbConnection> GetDbConnectionAsync()
+        {
+            return (await GetDbContextAsync()).Database.GetDbConnection();
+        }
+
+        protected async Task<IDbTransaction> GetDbTransactionAsync()
+        {
+            return (await GetDbContextAsync()).Database.CurrentTransaction?.GetDbTransaction();
+        }
+
+
+        #endregion
+
+        private readonly IDbContextProvider<TDbContext> _dbContextProvider;
 
         public virtual IGuidGenerator GuidGenerator => LazyServiceProvider.LazyGetService<IGuidGenerator>(SimpleGuidGenerator.Instance);
 
