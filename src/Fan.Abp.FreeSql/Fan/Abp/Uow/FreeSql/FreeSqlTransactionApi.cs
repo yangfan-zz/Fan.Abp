@@ -1,7 +1,6 @@
 ﻿using Fan.Abp.FreeSql;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Threading;
@@ -11,32 +10,58 @@ namespace Fan.Abp.Uow.FreeSql
 {
     public class FreeSqlTransactionApi : ITransactionApi, ISupportsRollback
     {
+        public DbTransaction DbContextTransaction { get; }
         public IFreeSqlDbContext StarterDbContext { get; }
         public List<IFreeSqlDbContext> AttendedDbContexts { get; }
 
         protected ICancellationTokenProvider CancellationTokenProvider { get; }
 
-        public FreeSqlTransactionApi(IFreeSqlDbContext starterDbContext,
+        public FreeSqlTransactionApi(DbTransaction dbContextTransaction,
+            IFreeSqlDbContext starterDbContext,
             ICancellationTokenProvider cancellationTokenProvider)
         {
             StarterDbContext = starterDbContext;
             CancellationTokenProvider = cancellationTokenProvider;
+            DbContextTransaction = dbContextTransaction;
             AttendedDbContexts = new List<IFreeSqlDbContext>();
+        }
+
+
+        public async Task CommitAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            //foreach (var dbContext in AttendedDbContexts)
+            //{
+            //    if (dbContext.As<DbContext>().HasRelationalTransactionManager() &&
+            //        dbContext.Database.GetDbConnection() == DbContextTransaction.GetDbTransaction().Connection)
+            //    {
+            //        continue; //Relational databases use the shared transaction if they are using the same connection
+            //    }
+
+            //    await dbContext.Database.CommitTransactionAsync(CancellationTokenProvider.FallbackToProvider(cancellationToken));
+            //}
+
+            await DbContextTransaction.CommitAsync(CancellationTokenProvider.FallbackToProvider(cancellationToken));
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            DbContextTransaction.Dispose();
         }
 
-        public Task CommitAsync(CancellationToken cancellationToken = new CancellationToken())
+        public async Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
-        }
+            //foreach (var dbContext in AttendedDbContexts)
+            //{
+            //    if (dbContext.As<DbContext>().HasRelationalTransactionManager() &&
+            //        dbContext.Database.GetDbConnection() == DbContextTransaction.GetDbTransaction().Connection)
+            //    {
+            //        continue; //Relational databases use the shared transaction if they are using the same connection
+            //    }
 
-        public Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken())
-        {
-            throw new NotImplementedException();
+            //    await dbContext.Database.RollbackTransactionAsync(CancellationTokenProvider.FallbackToProvider(cancellationToken));
+            //}
+
+            await DbContextTransaction.RollbackAsync(CancellationTokenProvider.FallbackToProvider(cancellationToken));
         }
     }
 }

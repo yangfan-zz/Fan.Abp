@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using FreeSql;
@@ -21,6 +23,21 @@ namespace Fan.Abp.FreeSql
         {
             return Context.SaveChangesAsync(cancellationToken);
         }
+
+        #region BeginTransactionAsync
+
+        public Task<DbTransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
+        {
+            Context.UnitOfWork.IsolationLevel = isolationLevel;
+            return Task.FromResult(Context.UnitOfWork.GetOrBeginTransaction());
+        }
+
+        public Task<DbTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(Context.UnitOfWork.GetOrBeginTransaction());
+        }
+
+        #endregion
 
         public void Initialize(FreeSqlDbContextInitializationContext initializationContext)
         {
