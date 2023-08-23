@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
+using Fan.Abp.FreeSql.Infrastructure;
 using FreeSql;
 using Volo.Abp.DependencyInjection;
 
@@ -10,9 +11,17 @@ namespace Fan.Abp.FreeSql
 {
     public abstract class FreeSqlDbContext: IFreeSqlDbContext
     {
+        private DatabaseFacade? _database;
+
         public IAbpLazyServiceProvider LazyServiceProvider { get; set; }
 
-        protected virtual DbContext Context => LazyServiceProvider.LazyGetRequiredService<IFreeSql>().CreateDbContext(); 
+        protected virtual DbContext Context => LazyServiceProvider.LazyGetRequiredService<IFreeSql>().CreateDbContext();
+
+        public virtual DatabaseFacade Database
+        {
+            get { return this._database ??= new DatabaseFacade(Context); }
+        }
+
 
         public virtual int SaveChanges()
         {
@@ -23,21 +32,6 @@ namespace Fan.Abp.FreeSql
         {
             return Context.SaveChangesAsync(cancellationToken);
         }
-
-        #region BeginTransactionAsync
-
-        public Task<DbTransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
-        {
-            Context.UnitOfWork.IsolationLevel = isolationLevel;
-            return Task.FromResult(Context.UnitOfWork.GetOrBeginTransaction());
-        }
-
-        public Task<DbTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
-        {
-            return Task.FromResult(Context.UnitOfWork.GetOrBeginTransaction());
-        }
-
-        #endregion
 
         public void Initialize(FreeSqlDbContextInitializationContext initializationContext)
         {
@@ -52,6 +46,11 @@ namespace Fan.Abp.FreeSql
 
             //ChangeTracker.Tracked += ChangeTracker_Tracked;
             //ChangeTracker.StateChanged += ChangeTracker_StateChanged;
+
+            //if (UnitOfWorkManager is AlwaysDisableTransactionsUnitOfWorkManager)
+            //{
+            //    Database.AutoTransactionBehavior = AutoTransactionBehavior.Never;
+            //}
         }
     }
 }

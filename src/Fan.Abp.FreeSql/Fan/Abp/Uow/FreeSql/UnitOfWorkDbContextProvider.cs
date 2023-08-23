@@ -5,12 +5,12 @@ using Fan.Abp.FreeSql;
 using Fan.Abp.FreeSql.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Volo.Abp;
 using Volo.Abp.Data;
 using Volo.Abp.MultiTenancy;
 using Volo.Abp.Threading;
 using Volo.Abp.Uow;
-using IUnitOfWork = Volo.Abp.Uow.IUnitOfWork;
 
 namespace Fan.Abp.Uow.FreeSql
 {
@@ -21,31 +21,35 @@ namespace Fan.Abp.Uow.FreeSql
 
         public ILogger<UnitOfWorkDbContextProvider<TDbContext>> Logger { get; set; }
 
+        protected readonly IUnitOfWorkManager UnitOfWorkManager;
+        protected readonly IConnectionStringResolver ConnectionStringResolver;
+        protected readonly ICancellationTokenProvider CancellationTokenProvider;
+        protected readonly ICurrentTenant CurrentTenant;
 
-        private readonly IUnitOfWorkManager _unitOfWorkManager;
-        private readonly IConnectionStringResolver _connectionStringResolver;
-        private readonly ICancellationTokenProvider _cancellationTokenProvider;
-        private readonly ICurrentTenant _currentTenant;
-
-        public UnitOfWorkDbContextProvider(IUnitOfWorkManager unitOfWorkManager,
-            IConnectionStringResolver connectionStringResolver, ICancellationTokenProvider cancellationTokenProvider,
+        public UnitOfWorkDbContextProvider(
+            IUnitOfWorkManager unitOfWorkManager,
+            IConnectionStringResolver connectionStringResolver,
+            ICancellationTokenProvider cancellationTokenProvider,
             ICurrentTenant currentTenant)
         {
-            _unitOfWorkManager = unitOfWorkManager;
-            _connectionStringResolver = connectionStringResolver;
-            _cancellationTokenProvider = cancellationTokenProvider;
-            _currentTenant = currentTenant;
+            UnitOfWorkManager = unitOfWorkManager;
+            ConnectionStringResolver = connectionStringResolver;
+            CancellationTokenProvider = cancellationTokenProvider;
+            CurrentTenant = currentTenant;
+          
+
+            Logger = NullLogger<UnitOfWorkDbContextProvider<TDbContext>>.Instance;
         }
 
         public async Task<TDbContext> GetDbContextAsync()
         {
-            var unitOfWork = _unitOfWorkManager.Current;
+            var unitOfWork = UnitOfWorkManager.Current;
             if (unitOfWork == null)
             {
                 throw new AbpException("A FreeSqlDbContext can only be created inside a unit of work!");
             }
 
-            var targetDbContextType = typeof(TDbContext); // TODO
+            var targetDbContextType = typeof(TDbContext); // TODO 临时使用
             var connectionStringName = ConnectionStringNameAttribute.GetConnStringName(targetDbContextType);
             var connectionString = await ResolveConnectionStringAsync(connectionStringName);
 
@@ -103,16 +107,16 @@ namespace Fan.Abp.Uow.FreeSql
                 try
                 {
                     var dbTransaction = unitOfWork.Options.IsolationLevel.HasValue
-                        ? await dbContext.BeginTransactionAsync(unitOfWork.Options.IsolationLevel.Value,
+                        ? await dbContext.Database.BeginTransactionAsync(unitOfWork.Options.IsolationLevel.Value,
                             GetCancellationToken())
-                        : await dbContext.BeginTransactionAsync(GetCancellationToken());
+                        : await dbContext.Database.BeginTransactionAsync(GetCancellationToken());
 
                     unitOfWork.AddTransactionApi(
                         transactionApiKey,
                         new FreeSqlTransactionApi(
                             dbTransaction,
                             dbContext,
-                            _cancellationTokenProvider
+                            CancellationTokenProvider
                         )
                     );
                 }
@@ -136,7 +140,8 @@ namespace Fan.Abp.Uow.FreeSql
                 //{
                 //    if (dbContext.Database.GetDbConnection() == DbContextCreationContext.Current.ExistingConnection)
                 //    {
-                //        await dbContext.Database.UseTransactionAsync(activeTransaction.DbContextTransaction.Connection, GetCancellationToken());
+                //        await dbContext.Database.UseTransactionAsync(activeTransaction.DbContextTransaction.Connection,
+                //            GetCancellationToken());
                 //    }
                 //    else
                 //    {
@@ -147,14 +152,14 @@ namespace Fan.Abp.Uow.FreeSql
                 //                * commit/rollback this transaction over the DbContext instance. */
                 //            if (unitOfWork.Options.IsolationLevel.HasValue)
                 //            {
-                //                await dbContext.BeginTransactionAsync(
+                //                await dbContext.Database.BeginTransactionAsync(
                 //                    unitOfWork.Options.IsolationLevel.Value,
                 //                    GetCancellationToken()
                 //                );
                 //            }
                 //            else
                 //            {
-                //                await dbContext.BeginTransactionAsync(
+                //                await dbContext.Database.BeginTransactionAsync(
                 //                    GetCancellationToken()
                 //                );
                 //            }
@@ -170,44 +175,45 @@ namespace Fan.Abp.Uow.FreeSql
                 //}
                 //else
                 //{
-                try
-                {
-                    /* No need to store the returning IDbContextTransaction for non-relational databases
-                        * since EfCoreTransactionApi will handle the commit/rollback over the DbContext instance.
-                          */
-                    await dbContext.BeginTransactionAsync(GetCancellationToken());
-                }
-                catch (Exception e) when (e is InvalidOperationException || e is NotSupportedException)
-                {
-                    Logger.LogError(TransactionsNotSupportedErrorMessage);
-                    Logger.LogException(e);
+                    try
+                    {
+                        /* No need to store the returning IDbContextTransaction for non-relational databases
+                            * since EfCoreTransactionApi will handle the commit/rollback over the DbContext instance.
+                              */
+                        await dbContext.Database.BeginTransactionAsync(GetCancellationToken());
+                    }
+                    catch (Exception e) when (e is InvalidOperationException || e is NotSupportedException)
+                    {
+                        Logger.LogError(TransactionsNotSupportedErrorMessage);
+                        Logger.LogException(e);
 
-                    return dbContext;
-                }
-                // }
+                        return dbContext;
+                    }
+               // }
 
                 activeTransaction.AttendedDbContexts.Add(dbContext);
 
                 return dbContext;
             }
         }
+
         private async Task<string> ResolveConnectionStringAsync(string connectionStringName)
         {
             // Multi-tenancy unaware contexts should always use the host connection string
             if (typeof(TDbContext).IsDefined(typeof(IgnoreMultiTenancyAttribute), false))
             {
-                using (_currentTenant.Change(null))
+                using (CurrentTenant.Change(null))
                 {
-                    return await _connectionStringResolver.ResolveAsync(connectionStringName);
+                    return await ConnectionStringResolver.ResolveAsync(connectionStringName);
                 }
             }
 
-            return await _connectionStringResolver.ResolveAsync(connectionStringName);
+            return await ConnectionStringResolver.ResolveAsync(connectionStringName);
         }
 
         protected virtual CancellationToken GetCancellationToken(CancellationToken preferredValue = default)
         {
-            return _cancellationTokenProvider.FallbackToProvider(preferredValue);
+            return CancellationTokenProvider.FallbackToProvider(preferredValue);
         }
     }
 }
