@@ -3,7 +3,9 @@ using System.Threading.Tasks;
 using FreeSqlDemo.Domain.Users;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Volo.Abp;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.Uow;
 
 namespace FreeSqlDemo;
 
@@ -19,10 +21,11 @@ public class HelloWorldService : ITransientDependency
         Logger = NullLogger<HelloWorldService>.Instance;
     }
 
-    public async Task SayHelloAsync()
+    [UnitOfWork]
+    public virtual async Task SayHelloAsync()
     {
-      //  await CreateAsync();
-        var users = await _userRepository.GetListAsync();
+        await CreateAsync();
+        var users = await _userRepository.GetListAsync(u=>u.UserName =="张三");
         await CreateAsync(true);
         users = await _userRepository.GetListAsync();
 
@@ -30,8 +33,10 @@ public class HelloWorldService : ITransientDependency
         {
             Logger.LogInformation(user.UserName);
         }
-       
-      
+
+        await CreateAsync();
+
+        throw new UserFriendlyException("aaa");
     }
 
     private Task CreateAsync(bool autoSave = false)

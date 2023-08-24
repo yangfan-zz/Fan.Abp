@@ -24,7 +24,7 @@ public class FreeSqlDemoModule : AbpModule
         IFreeSql fsql = new FreeSqlBuilder()
             .UseConnectionString(DataType.MySql, @"data source=localhost;port=3306;user id=root;password=123456.;initial catalog=freesql;charset=utf8")
             .UseMonitorCommand(cmd => Console.WriteLine($"Sql：{cmd.CommandText}"))//监听SQL语句
-            .UseAutoSyncStructure(true)
+           // .UseAutoSyncStructure(true)
             .Build();
 
         context.Services.AddSingleton(fsql);

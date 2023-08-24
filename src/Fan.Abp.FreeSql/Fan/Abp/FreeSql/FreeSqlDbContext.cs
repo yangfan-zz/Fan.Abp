@@ -15,15 +15,22 @@ namespace Fan.Abp.FreeSql
 
         public IAbpLazyServiceProvider LazyServiceProvider { get; set; }
 
-        protected virtual IFreeSql FreeSql => LazyServiceProvider.LazyGetRequiredService<IFreeSql>();
-
         public virtual DatabaseFacade Database
         {
             get { return this._database ??= new DatabaseFacade(this); }
         }
 
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+           // await FlushCommandAsync(cancellationToken);
+           return base.SaveChangesAsync(cancellationToken);
+
+           return Task.FromResult(0);
+        }
+
         public void Initialize(FreeSqlDbContextInitializationContext initializationContext)
         {
+            
             //if (initializationContext.UnitOfWork.Options.Timeout.HasValue &&
             //    Database.IsRelational() &&
             //    !Database.GetCommandTimeout().HasValue)

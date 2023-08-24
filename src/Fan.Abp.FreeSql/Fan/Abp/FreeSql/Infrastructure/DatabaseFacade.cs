@@ -14,9 +14,8 @@ namespace Fan.Abp.FreeSql.Infrastructure
     {
         private readonly DbContext _context;
 
-        [CanBeNull]
         public virtual IDbContextTransaction CurrentTransaction =>
-            new DbContextTransaction(_context.UnitOfWork.GetOrBeginTransaction());
+            new DbContextTransaction(_context);
 
         public DatabaseFacade(DbContext context)
         {
@@ -26,21 +25,21 @@ namespace Fan.Abp.FreeSql.Infrastructure
         public virtual DbConnection GetDbConnection()
         {
             // TODO 调研 FreeSql 如何获取当前链接
-            return _context.UnitOfWork.GetOrBeginTransaction().Connection;
+            return CurrentTransaction.GetDbTransaction().Connection;
         }
 
         #region BeginTransactionAsync
 
-        public Task<DbTransaction> BeginTransactionAsync(IsolationLevel isolationLevel,
+        public Task<IDbContextTransaction> BeginTransactionAsync(IsolationLevel isolationLevel,
             CancellationToken cancellationToken = default)
         {
             _context.UnitOfWork.IsolationLevel = isolationLevel;
-            return Task.FromResult(_context.UnitOfWork.GetOrBeginTransaction());
+            return Task.FromResult(CurrentTransaction);
         }
 
-        public Task<DbTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+        public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(_context.UnitOfWork.GetOrBeginTransaction());
+            return Task.FromResult(CurrentTransaction);
         }
 
         #endregion

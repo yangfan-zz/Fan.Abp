@@ -158,10 +158,12 @@ namespace Fan.Abp.Domain.Repositories.FreeSql
                 : await (await GetDbSetAsync()).ToListAsync(GetCancellationToken(cancellationToken));
         }
 
-        public override Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate, bool includeDetails = false,
+        public override async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate, bool includeDetails = false,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            return includeDetails
+                ? await(await WithDetailsAsync()).Where(predicate).ToListAsync(GetCancellationToken(cancellationToken))
+                : await(await GetDbSetAsync()).Where(predicate).ToListAsync(GetCancellationToken(cancellationToken));
         }
 
         public override Task<long> GetCountAsync(CancellationToken cancellationToken = new CancellationToken())

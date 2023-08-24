@@ -1,6 +1,6 @@
 ﻿using Fan.Abp.FreeSql;
+using Fan.Abp.FreeSql.Infrastructure;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Threading;
@@ -10,13 +10,13 @@ namespace Fan.Abp.Uow.FreeSql
 {
     public class FreeSqlTransactionApi : ITransactionApi, ISupportsRollback
     {
-        public DbTransaction DbContextTransaction { get; }
+        public IDbContextTransaction DbContextTransaction { get; }
         public IFreeSqlDbContext StarterDbContext { get; }
         public List<IFreeSqlDbContext> AttendedDbContexts { get; }
 
         protected ICancellationTokenProvider CancellationTokenProvider { get; }
 
-        public FreeSqlTransactionApi(DbTransaction dbContextTransaction,
+        public FreeSqlTransactionApi(IDbContextTransaction dbContextTransaction,
             IFreeSqlDbContext starterDbContext,
             ICancellationTokenProvider cancellationTokenProvider)
         {

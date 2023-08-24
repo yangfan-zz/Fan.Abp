@@ -136,7 +136,7 @@ namespace Fan.Abp.Uow.FreeSql
             }
             else
             {
-                DbContextCreationContext.Current.ExistingConnection = activeTransaction.DbContextTransaction.Connection;
+                DbContextCreationContext.Current.ExistingConnection = activeTransaction.DbContextTransaction.GetDbTransaction().Connection;
 
                 var dbContext = unitOfWork.ServiceProvider.GetRequiredService<TDbContext>();
 
