@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using FreeSqlDemo.Domain.Users;
 using Microsoft.Extensions.Logging;
@@ -24,6 +25,10 @@ public class HelloWorldService : ITransientDependency
     [UnitOfWork]
     public virtual async Task SayHelloAsync()
     {
+        var query = await _userRepository.GetQueryableAsync();
+
+        var aa = query.Take(1).ToList();
+
         await CreateAsync();
         var users = await _userRepository.GetListAsync(u=>u.UserName =="张三");
         await CreateAsync(true);
@@ -36,7 +41,7 @@ public class HelloWorldService : ITransientDependency
 
         await CreateAsync();
 
-        throw new UserFriendlyException("aaa");
+       // throw new UserFriendlyException("aaa");
     }
 
     private Task CreateAsync(bool autoSave = false)

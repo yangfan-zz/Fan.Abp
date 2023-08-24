@@ -23,7 +23,7 @@ namespace Fan.Abp.FreeSql
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
            // await FlushCommandAsync(cancellationToken);
-           return base.SaveChangesAsync(cancellationToken);
+          // return base.SaveChangesAsync(cancellationToken);
 
            return Task.FromResult(0);
         }
