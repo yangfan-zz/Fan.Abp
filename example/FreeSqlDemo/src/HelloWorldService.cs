@@ -13,12 +13,13 @@ namespace FreeSqlDemo;
 public class HelloWorldService : ITransientDependency
 {
     private readonly IUserRepository _userRepository;
-
+    private readonly IUnitOfWorkManager _unitOfWorkManager;
     public ILogger<HelloWorldService> Logger { get; set; }
 
-    public HelloWorldService(IUserRepository userRepository)
+    public HelloWorldService(IUserRepository userRepository, IUnitOfWorkManager unitOfWorkManager)
     {
         _userRepository = userRepository;
+        _unitOfWorkManager = unitOfWorkManager;
         Logger = NullLogger<HelloWorldService>.Instance;
     }
 
@@ -26,11 +27,33 @@ public class HelloWorldService : ITransientDependency
     public virtual async Task SayHelloAsync()
     {
         var query = await _userRepository.GetQueryableAsync();
-
         var aa = query.Take(1).ToList();
 
-        await CreateAsync();
-        var users = await _userRepository.GetListAsync(u=>u.UserName =="张三");
+        // 内部工作单元
+        using (var uow = _unitOfWorkManager.Begin(
+                   requiresNew: true, isTransactional: true
+               ))
+        {
+            //...
+            await CreateAsync();
+
+            // 内部工作单元
+            using (var uowSub = _unitOfWorkManager.Begin(
+                       requiresNew: true, isTransactional: true
+                   ))
+            {
+                //...
+                await CreateAsync();
+                await uowSub.CompleteAsync();
+
+            }
+           
+            await uow.CompleteAsync();
+        }
+
+
+        // 外部工作单元
+        var users = await _userRepository.GetListAsync(u => u.UserName == "张三");
         await CreateAsync(true);
         users = await _userRepository.GetListAsync();
 

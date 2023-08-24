@@ -11,6 +11,16 @@ namespace Fan.Abp.FreeSql
 {
     public abstract class FreeSqlDbContext: DbContext, IFreeSqlDbContext
     {
+        protected FreeSqlDbContext() : this(null, null)
+        {
+
+        }
+
+        protected FreeSqlDbContext(IFreeSql fsql, DbContextOptions options):base(fsql, options)
+        {
+
+        }
+
         private DatabaseFacade? _database;
 
         public IAbpLazyServiceProvider LazyServiceProvider { get; set; }
