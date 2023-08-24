@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  mysql:
+    container_name: mysql
+    restart: always:latest
+    image: mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - mysql_data:/etc/mysql/my.cnf
+    networks: 
+      - freesql-network
+volumes:
+  mysql_data:
+
+networks:
+  freesql-network:
+    external: true

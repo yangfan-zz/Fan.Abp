@@ -57,7 +57,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DomainCqrs.Domain.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DomainCqrs.EntityFrameworkCore.Tests", "example\DomainCqrs\test\DomainCqrs.EntityFrameworkCore.Tests\DomainCqrs.EntityFrameworkCore.Tests.csproj", "{4DA723A6-773E-46A0-BA68-FA393EDC0DA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fan.Abp.FreeSql", "src\Fan.Abp.FreeSql\Fan.Abp.FreeSql.csproj", "{EC979214-5665-4FD5-93C6-60689D7C63ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fan.Abp.FreeSql", "src\Fan.Abp.FreeSql\Fan.Abp.FreeSql.csproj", "{EC979214-5665-4FD5-93C6-60689D7C63ED}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FreeSqlDemo", "FreeSqlDemo", "{80C74BB5-B05B-4097-962B-D2A4C6CE893F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreeSqlDemo", "example\FreeSqlDemo\src\FreeSqlDemo.csproj", "{DD961AAD-043A-4779-8B78-8A400CC3191D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -153,6 +157,10 @@ Global
 		{EC979214-5665-4FD5-93C6-60689D7C63ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC979214-5665-4FD5-93C6-60689D7C63ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC979214-5665-4FD5-93C6-60689D7C63ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD961AAD-043A-4779-8B78-8A400CC3191D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD961AAD-043A-4779-8B78-8A400CC3191D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD961AAD-043A-4779-8B78-8A400CC3191D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD961AAD-043A-4779-8B78-8A400CC3191D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -183,6 +191,8 @@ Global
 		{AC91AA46-0E85-41A3-8436-11D7B3F5DDD0} = {8CA39A51-F480-4C90-BB81-7E845596E7D7}
 		{4DA723A6-773E-46A0-BA68-FA393EDC0DA5} = {8CA39A51-F480-4C90-BB81-7E845596E7D7}
 		{EC979214-5665-4FD5-93C6-60689D7C63ED} = {2472CFC6-A60D-4C8B-A8F6-89450D56093F}
+		{80C74BB5-B05B-4097-962B-D2A4C6CE893F} = {1D951F40-EC30-4F05-8677-8DB9BE5B37E4}
+		{DD961AAD-043A-4779-8B78-8A400CC3191D} = {80C74BB5-B05B-4097-962B-D2A4C6CE893F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8A90BBC0-C4E5-4F6B-AD12-B9B734877CF8}
