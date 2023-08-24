@@ -22,16 +22,6 @@ namespace Fan.Abp.Ddd.Application.Posts
             }
         }
 
-        public IEnumerator<Post> GetEnumerator()
-        {
-            return _post.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
         public Type ElementType { get; }
         public Expression Expression { get; }
         public IQueryProvider Provider { get; }
@@ -157,6 +147,11 @@ namespace Fan.Abp.Ddd.Application.Posts
 
         public Task DeleteManyAsync(IEnumerable<int> ids, bool autoSave = false,
             CancellationToken cancellationToken = new CancellationToken())
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteDirectAsync(Expression<Func<Post, bool>> predicate, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

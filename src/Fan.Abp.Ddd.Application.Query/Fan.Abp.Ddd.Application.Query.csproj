@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<Import Project="..\..\configureawait.props" />
 	<Import Project="..\..\common.props" />
@@ -8,7 +8,7 @@
 		<RootNamespace></RootNamespace>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Volo.Abp.Ddd.Application.Contracts" Version="4.4.3" />
+		<PackageReference Include="Volo.Abp.Ddd.Application.Contracts" Version="7.3.2" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Fan.Abp.Cqrs\Fan.Abp.Cqrs.csproj" />

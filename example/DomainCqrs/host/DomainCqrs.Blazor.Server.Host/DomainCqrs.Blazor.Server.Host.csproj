@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <Import Project="..\..\common.props" />
 
@@ -22,29 +22,29 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\DomainCqrs.Application\DomainCqrs.Application.csproj" />
-        <PackageReference Include="Volo.Abp.EntityFrameworkCore.SqlServer" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.Autofac" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.Swashbuckle" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.AspNetCore.Authentication.JwtBearer" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.AspNetCore.Serilog" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.AspNetCore.Components.Server.BasicTheme" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.AuditLogging.EntityFrameworkCore" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.Account.Web.IdentityServer" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.Account.Application" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.FeatureManagement.EntityFrameworkCore" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.FeatureManagement.Application" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.Identity.Blazor.Server" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.Identity.EntityFrameworkCore" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.Identity.Application" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.TenantManagement.Blazor.Server" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.TenantManagement.EntityFrameworkCore" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.TenantManagement.Application" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.SettingManagement.Blazor.Server" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.SettingManagement.EntityFrameworkCore" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.SettingManagement.Application" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="4.4.3" />
-        <PackageReference Include="Volo.Abp.PermissionManagement.EntityFrameworkCore" Version="4.4.3" />
+        <PackageReference Include="Volo.Abp.EntityFrameworkCore.SqlServer" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.Autofac" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.Swashbuckle" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.AspNetCore.Authentication.JwtBearer" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.AspNetCore.Serilog" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.AspNetCore.Components.Server.BasicTheme" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.AuditLogging.EntityFrameworkCore" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.Account.Web.IdentityServer" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.Account.Application" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.FeatureManagement.EntityFrameworkCore" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.FeatureManagement.Application" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.Identity.Blazor.Server" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.Identity.EntityFrameworkCore" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.Identity.Application" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.TenantManagement.Blazor.Server" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.TenantManagement.EntityFrameworkCore" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.TenantManagement.Application" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.SettingManagement.Blazor.Server" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.SettingManagement.EntityFrameworkCore" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.SettingManagement.Application" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="7.3.2" />
+        <PackageReference Include="Volo.Abp.PermissionManagement.EntityFrameworkCore" Version="7.3.2" />
         <ProjectReference Include="..\..\src\DomainCqrs.Blazor.Server\DomainCqrs.Blazor.Server.csproj" />
         <ProjectReference Include="..\..\src\DomainCqrs.EntityFrameworkCore\DomainCqrs.EntityFrameworkCore.csproj" />
         <ProjectReference Include="..\..\src\DomainCqrs.HttpApi\DomainCqrs.HttpApi.csproj" />
