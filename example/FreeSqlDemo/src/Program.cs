@@ -49,6 +49,7 @@ public class Program
         }
         catch (Exception ex)
         {
+            Log.Error(ex,"aa");
             if (ex is HostAbortedException)
             {
                 throw;

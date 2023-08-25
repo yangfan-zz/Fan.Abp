@@ -17,7 +17,7 @@ namespace Fan.Abp.Domain.Repositories.FreeSql
         where TDbContext : IFreeSqlDbContext
         where TEntity : class, IEntity
     {
-        #region DbContext GetDbContext GetDbContextAsync 
+        #region DbContext GetDbContext GetDbContextAsync
 
         [Obsolete("Use GetDbContextAsync() method.")]
         protected virtual TDbContext DbContext => GetDbContext();
@@ -95,7 +95,8 @@ namespace Fan.Abp.Domain.Repositories.FreeSql
 
         private readonly IDbContextProvider<TDbContext> _dbContextProvider;
 
-        public virtual IGuidGenerator GuidGenerator => LazyServiceProvider.LazyGetService<IGuidGenerator>(SimpleGuidGenerator.Instance);
+        public virtual IGuidGenerator GuidGenerator =>
+            LazyServiceProvider.LazyGetService<IGuidGenerator>(SimpleGuidGenerator.Instance);
 
         #region 构造函数
 
@@ -106,6 +107,8 @@ namespace Fan.Abp.Domain.Repositories.FreeSql
 
         #endregion
 
+
+        #region InsertAsync
 
         public override async Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false,
             CancellationToken cancellationToken = default)
@@ -127,12 +130,14 @@ namespace Fan.Abp.Domain.Repositories.FreeSql
             return savedEntity;
         }
 
+        #endregion
+
+        #region UpdateAsync
+
         public override async Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false,
             CancellationToken cancellationToken = default)
         {
             var dbContext = await GetDbContextAsync();
-
-            dbContext.Set<TEntity>().Attach(entity);
 
             await dbContext.Set<TEntity>().UpdateAsync(entity, cancellationToken);
 
@@ -146,47 +151,110 @@ namespace Fan.Abp.Domain.Repositories.FreeSql
             return updatedEntity;
         }
 
-        public override Task DeleteAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = new CancellationToken())
+        #endregion
+
+        #region MyRegion
+
+        public override async Task DeleteAsync(TEntity entity, bool autoSave = false,
+            CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var dbContext = await GetDbContextAsync();
+
+            dbContext.Set<TEntity>().Remove(entity);
+
+            if (autoSave)
+            {
+                await dbContext.SaveChangesAsync(GetCancellationToken(cancellationToken));
+            }
         }
 
-        public override async Task<List<TEntity>> GetListAsync(bool includeDetails = false, CancellationToken cancellationToken = default)
+        #endregion
+
+        #region GetListAsync
+
+        public override async Task<List<TEntity>> GetListAsync(bool includeDetails = false,
+            CancellationToken cancellationToken = default)
         {
             return includeDetails
                 ? await (await WithDetailsAsync()).ToListAsync(GetCancellationToken(cancellationToken))
                 : await (await GetDbSetAsync()).ToListAsync(GetCancellationToken(cancellationToken));
         }
 
-        public override async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate, bool includeDetails = false,
+        public override async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate,
+            bool includeDetails = false,
             CancellationToken cancellationToken = new CancellationToken())
         {
             return includeDetails
-                ? await(await WithDetailsAsync()).Where(predicate).ToListAsync(GetCancellationToken(cancellationToken))
-                : await(await GetDbSetAsync()).Where(predicate).ToListAsync(GetCancellationToken(cancellationToken));
+                ? await (await WithDetailsAsync()).Where(predicate).ToListAsync(GetCancellationToken(cancellationToken))
+                : await (await GetDbSetAsync()).Where(predicate).ToListAsync(GetCancellationToken(cancellationToken));
         }
 
-        public override Task<long> GetCountAsync(CancellationToken cancellationToken = new CancellationToken())
+        #endregion
+
+        #region GetCountAsync
+
+        public override async Task<long> GetCountAsync(CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await (await GetDbSetAsync()).LongCountAsync(GetCancellationToken(cancellationToken));
         }
 
-        public override Task<List<TEntity>> GetPagedListAsync(int skipCount, int maxResultCount, string sorting, bool includeDetails = false,
-            CancellationToken cancellationToken = new CancellationToken())
+        #endregion
+
+        #region GetPagedListAsync
+
+        public override async Task<List<TEntity>> GetPagedListAsync(
+            int skipCount,
+            int maxResultCount,
+            string sorting,
+            bool includeDetails = false,
+            CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var queryable = includeDetails
+                ? await WithDetailsAsync()
+                : (await GetDbSetAsync()).AsQueryable();
+
+            return await queryable
+                .OrderByIf<TEntity, IQueryable<TEntity>>(!sorting.IsNullOrWhiteSpace(), sorting)
+                .PageBy(skipCount, maxResultCount)
+                .ToListAsync(GetCancellationToken(cancellationToken));
         }
+
+        #endregion
+
+
+        #region GetQueryableAsync
+
 
         public override async Task<IQueryable<TEntity>> GetQueryableAsync()
         {
-           return (await GetDbSetAsync()).Select.AsQueryable();
+            return (await GetDbSetAsync()).AsQueryable();
         }
 
-        public override Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate, bool includeDetails = true,
-            CancellationToken cancellationToken = new CancellationToken())
+        [Obsolete("Use GetQueryableAsync method.")]
+        protected override IQueryable<TEntity> GetQueryable()
         {
-            throw new NotImplementedException();
+            return DbSet.AsQueryable();
         }
+
+        #endregion
+
+        #region FindAsync
+
+        public override async Task<TEntity> FindAsync(
+            Expression<Func<TEntity, bool>> predicate,
+            bool includeDetails = true,
+            CancellationToken cancellationToken = default)
+        {
+            return includeDetails
+                ? await (await WithDetailsAsync())
+                    .Where(predicate)
+                    .SingleOrDefaultAsync(GetCancellationToken(cancellationToken))
+                : await (await GetDbSetAsync()).AsQueryable()
+                    .Where(predicate)
+                    .SingleOrDefaultAsync(GetCancellationToken(cancellationToken));
+        }
+
+        #endregion
 
         public override Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool autoSave = false,
             CancellationToken cancellationToken = new CancellationToken())
@@ -194,26 +262,26 @@ namespace Fan.Abp.Domain.Repositories.FreeSql
             throw new NotImplementedException();
         }
 
-        public override Task DeleteDirectAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = new CancellationToken())
+        public override Task DeleteDirectAsync(Expression<Func<TEntity, bool>> predicate,
+            CancellationToken cancellationToken = new CancellationToken())
         {
             throw new NotImplementedException();
         }
 
-      
+        #region WithDetailsAsync
 
-        [Obsolete("Use GetQueryableAsync method.")]
-        protected override IQueryable<TEntity> GetQueryable()
-        {
-            return DbSet.Select.AsQueryable();
-        }
-
-        public override async Task<IQueryable<TEntity>> WithDetailsAsync(params Expression<Func<TEntity, object>>[] propertySelectors)
+        public override async Task<IQueryable<TEntity>> WithDetailsAsync(
+            params Expression<Func<TEntity, object>>[] propertySelectors)
         {
             return IncludeDetails(
                 await GetQueryableAsync(),
                 propertySelectors
             );
         }
+
+        #endregion
+
+        #region IncludeDetails
 
         private static IQueryable<TEntity> IncludeDetails(
             IQueryable<TEntity> query,
@@ -230,6 +298,7 @@ namespace Fan.Abp.Domain.Repositories.FreeSql
             return query;
         }
 
+        #endregion
 
         #region 检测并设置主键唯一标识
 
@@ -240,6 +309,7 @@ namespace Fan.Abp.Domain.Repositories.FreeSql
                 TrySetGuidId(entityWithGuidId);
             }
         }
+
         protected virtual void TrySetGuidId(IEntity<Guid> entity)
         {
             if (entity.Id != default)
@@ -255,6 +325,5 @@ namespace Fan.Abp.Domain.Repositories.FreeSql
         }
 
         #endregion
-
     }
 }

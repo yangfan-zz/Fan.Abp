@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Volo.Abp;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Uow;
 
 namespace FreeSqlDemo;
@@ -23,48 +24,54 @@ public class HelloWorldService : ITransientDependency
         Logger = NullLogger<HelloWorldService>.Instance;
     }
 
-    [UnitOfWork]
+    [UnitOfWork(isTransactional: false)]
     public virtual async Task SayHelloAsync()
     {
         var query = await _userRepository.GetQueryableAsync();
         var aa = query.Take(1).ToList();
 
-        // 内部工作单元
-        using (var uow = _unitOfWorkManager.Begin(
-                   requiresNew: true, isTransactional: true
-               ))
-        {
-            //...
-            await CreateAsync();
+        //// 内部工作单元
+        //using (var uow = _unitOfWorkManager.Begin(
+        //           requiresNew: true, isTransactional: false
+        //       ))
+        //{
+        //    //...
+        //    await CreateAsync();
 
-            // 内部工作单元
-            using (var uowSub = _unitOfWorkManager.Begin(
-                       requiresNew: true, isTransactional: true
-                   ))
-            {
-                //...
-                await CreateAsync();
-                await uowSub.CompleteAsync();
+        //    // 内部工作单元
+        //    using (var uowSub = _unitOfWorkManager.Begin(isTransactional: true))
+        //    {
+        //        //...
+        //        await CreateAsync();
+        //        await uowSub.CompleteAsync();
 
-            }
-           
-            await uow.CompleteAsync();
-        }
+        //    }
+
+        //    await uow.CompleteAsync();
+        //}
 
 
         // 外部工作单元
+        var count = await _userRepository.GetCountAsync();
+
+       var ff = await _userRepository.FindAsync(s => s.UserName!.Contains("a"));
+
+        var varu = await _userRepository.GetPagedListAsync(0,10,"Id");
+
         var users = await _userRepository.GetListAsync(u => u.UserName == "张三");
-        await CreateAsync(true);
+        await CreateAsync(false);
         users = await _userRepository.GetListAsync();
 
         foreach (var user in users)
         {
+            user.UserName = "aa++";
+            await _userRepository.UpdateAsync(user);
             Logger.LogInformation(user.UserName);
         }
 
         await CreateAsync();
 
-       // throw new UserFriendlyException("aaa");
+// throw new UserFriendlyException("aaa");
     }
 
     private Task CreateAsync(bool autoSave = false)

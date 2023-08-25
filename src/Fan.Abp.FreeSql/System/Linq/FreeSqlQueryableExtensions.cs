@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FreeSql;
 using FreeSql.Extensions.Linq;
+using JetBrains.Annotations;
 
 namespace System.Linq
 {
@@ -23,6 +24,14 @@ namespace System.Linq
         public static Task<List<TEntity>> ToListAsync<TEntity>(this IQueryable<TEntity> queryable, CancellationToken cancellationToken = default) where TEntity : class
         {
             return queryable.AsSelect().ToListAsync(cancellationToken);
+        }
+
+        [ItemCanBeNull]
+        public static async Task<TEntity> SingleOrDefaultAsync<TEntity>(this IQueryable<TEntity> queryable,
+            CancellationToken cancellationToken = default) where TEntity : class
+        {
+            var result = await queryable.AsSelect().Take(2).ToListAsync(cancellationToken);
+            return result.SingleOrDefault();
         }
 
         public static IQueryable<TEntity> Include<TEntity, TNavigate>(this IQueryable<TEntity> queryable,

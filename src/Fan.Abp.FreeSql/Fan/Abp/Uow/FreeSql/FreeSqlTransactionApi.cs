@@ -29,16 +29,16 @@ namespace Fan.Abp.Uow.FreeSql
 
         public async Task CommitAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            //foreach (var dbContext in AttendedDbContexts)
-            //{
-            //    if (dbContext.As<DbContext>().HasRelationalTransactionManager() &&
-            //        dbContext.Database.GetDbConnection() == DbContextTransaction.GetDbTransaction().Connection)
-            //    {
-            //        continue; //Relational databases use the shared transaction if they are using the same connection
-            //    }
+            foreach (var dbContext in AttendedDbContexts)
+            {
+                //if (dbContext.As<DbContext>().HasRelationalTransactionManager() &&
+                //    dbContext.Database.GetDbConnection() == DbContextTransaction.GetDbTransaction().Connection)
+                //{
+                //    continue; //Relational databases use the shared transaction if they are using the same connection
+                //}
 
-            //    await dbContext.Database.CommitTransactionAsync(CancellationTokenProvider.FallbackToProvider(cancellationToken));
-            //}
+                //await dbContext.Database.CommitTransactionAsync(CancellationTokenProvider.FallbackToProvider(cancellationToken));
+            }
 
             await DbContextTransaction.CommitAsync(CancellationTokenProvider.FallbackToProvider(cancellationToken));
         }
@@ -50,16 +50,16 @@ namespace Fan.Abp.Uow.FreeSql
 
         public async Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            //foreach (var dbContext in AttendedDbContexts)
-            //{
-            //    if (dbContext.As<DbContext>().HasRelationalTransactionManager() &&
-            //        dbContext.Database.GetDbConnection() == DbContextTransaction.GetDbTransaction().Connection)
-            //    {
-            //        continue; //Relational databases use the shared transaction if they are using the same connection
-            //    }
+            foreach (var dbContext in AttendedDbContexts)
+            {
+                //if (dbContext.As<DbContext>().HasRelationalTransactionManager() &&
+                //    dbContext.Database.GetDbConnection() == DbContextTransaction.GetDbTransaction().Connection)
+                //{
+                //    continue; //Relational databases use the shared transaction if they are using the same connection
+                //}
 
-            //    await dbContext.Database.RollbackTransactionAsync(CancellationTokenProvider.FallbackToProvider(cancellationToken));
-            //}
+                //await dbContext.Database.RollbackTransactionAsync(CancellationTokenProvider.FallbackToProvider(cancellationToken));
+            }
 
             await DbContextTransaction.RollbackAsync(CancellationTokenProvider.FallbackToProvider(cancellationToken));
         }

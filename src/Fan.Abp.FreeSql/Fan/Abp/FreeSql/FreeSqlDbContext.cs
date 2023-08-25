@@ -11,12 +11,14 @@ namespace Fan.Abp.FreeSql
 {
     public abstract class FreeSqlDbContext: DbContext, IFreeSqlDbContext
     {
+        private bool _abpUnitOfWorkTransactional;
+
         protected FreeSqlDbContext() : this(null, null)
         {
 
         }
 
-        protected FreeSqlDbContext(IFreeSql fsql, DbContextOptions options):base(fsql, options)
+        protected FreeSqlDbContext(IFreeSql fsql, DbContextOptions options) : base(fsql, options)
         {
 
         }
@@ -32,15 +34,20 @@ namespace Fan.Abp.FreeSql
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-           // await FlushCommandAsync(cancellationToken);
-          // return base.SaveChangesAsync(cancellationToken);
+            // 是否使用了abp 工作单元并开启事务
+            if (_abpUnitOfWorkTransactional)
+            {
+                // TODO 使用了工作单元事务 则需要修改 DbContext 逻辑 只向数据库提交数据，不提交事务，提交事务交给工作单元实现
+                return Task.FromResult(0);
+            }
 
-           return Task.FromResult(0);
+            return base.SaveChangesAsync(cancellationToken);
         }
 
         public void Initialize(FreeSqlDbContextInitializationContext initializationContext)
         {
-            
+            _abpUnitOfWorkTransactional = initializationContext.UnitOfWork.Options.IsTransactional;
+
             //if (initializationContext.UnitOfWork.Options.Timeout.HasValue &&
             //    Database.IsRelational() &&
             //    !Database.GetCommandTimeout().HasValue)
