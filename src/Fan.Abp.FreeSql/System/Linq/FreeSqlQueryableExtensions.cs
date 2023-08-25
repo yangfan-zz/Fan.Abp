@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 
 namespace System.Linq
 {
-    public static class FreeSqlQueryableExtensions
+    internal static class FreeSqlQueryableExtensions
     {
         public static ISelect<TEntity> AsSelect<TEntity>(this IQueryable<TEntity> queryable)
         {

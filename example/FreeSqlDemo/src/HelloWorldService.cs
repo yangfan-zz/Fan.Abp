@@ -53,8 +53,8 @@ public class HelloWorldService : ITransientDependency
 
         // 外部工作单元
         var count = await _userRepository.GetCountAsync();
-
-        var singleUser = await _userRepository.SingleAsync(s => s.UserName!.Contains("a"));
+      var u =  await CreateAsync();
+      var singleUser = await _userRepository.SingleAsync(s =>  s.Id == u.Id);
         var ff = await _userRepository.FindAsync(s => s.UserName!.Contains("a"));
 
         var varu = await _userRepository.GetPagedListAsync(0,10,"Id");
@@ -67,6 +67,7 @@ public class HelloWorldService : ITransientDependency
         {
             user.UserName = "aa++";
             await _userRepository.UpdateAsync(user);
+          
             Logger.LogInformation(user.UserName);
         }
 
@@ -75,9 +76,9 @@ public class HelloWorldService : ITransientDependency
 // throw new UserFriendlyException("aaa");
     }
 
-    private Task CreateAsync(bool autoSave = false)
+    private Task<User> CreateAsync(bool autoSave = false)
     {
-      return  _userRepository.InsertAsync(new User(Guid.NewGuid().ToString("N"), "张三"), autoSave);
+        return _userRepository.InsertAsync(new User(Guid.NewGuid().ToString("N"), "张三"), autoSave);
     }
 
 }
