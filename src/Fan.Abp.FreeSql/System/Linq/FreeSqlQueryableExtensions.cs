@@ -10,7 +10,7 @@ namespace System.Linq
 {
     public static class FreeSqlQueryableExtensions
     {
-        public static ISelect<TEntity> AsSelect<TEntity>(this IQueryable<TEntity> queryable) where TEntity : class
+        public static ISelect<TEntity> AsSelect<TEntity>(this IQueryable<TEntity> queryable)
         {
             if (queryable is QueryableProvider<TEntity, TEntity> selectQueryable)
             {
@@ -20,8 +20,7 @@ namespace System.Linq
             throw new Exception("IQueryable 不是 FreeSql 对象！");
         }
 
-
-        public static Task<List<TEntity>> ToListAsync<TEntity>(this IQueryable<TEntity> queryable, CancellationToken cancellationToken = default) where TEntity : class
+        public static Task<List<TEntity>> ToListAsync<TEntity>(this IQueryable<TEntity> queryable, CancellationToken cancellationToken = default)
         {
             return queryable.AsSelect().ToListAsync(cancellationToken);
         }
@@ -33,6 +32,25 @@ namespace System.Linq
             var result = await queryable.AsSelect().Take(2).ToListAsync(cancellationToken);
             return result.SingleOrDefault();
         }
+
+        [ItemCanBeNull]
+        public static async Task<TEntity> SingleAsync<TEntity>(this IQueryable<TEntity> queryable,
+            CancellationToken cancellationToken = default)
+        {
+            var result = await queryable.AsSelect().Take(2).ToListAsync(cancellationToken);
+            return result.Single();
+        }
+
+        [ItemCanBeNull]
+        public static async Task<TEntity> SingleAsync<TEntity>(this IQueryable<TEntity> queryable,
+            Expression<Func<TEntity, bool>> predicate,
+            CancellationToken cancellationToken = default) // where TEntity : class
+        {
+            var result = await queryable.AsSelect().Where(predicate).Take(2).ToListAsync(cancellationToken);
+            return result.Single();
+        }
+
+
 
         public static IQueryable<TEntity> Include<TEntity, TNavigate>(this IQueryable<TEntity> queryable,
             Expression<Func<TEntity, TNavigate>> navigateSelector)

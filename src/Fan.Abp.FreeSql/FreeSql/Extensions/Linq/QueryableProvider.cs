@@ -8,7 +8,13 @@ using System.Linq.Expressions;
 
 namespace FreeSql.Extensions.Linq
 {
-    public class QueryableProvider<TCurrent, TSource> : IOrderedQueryable<TCurrent> where TSource : class
+
+    public class FreeSqlQueryProvider
+    {
+
+    }
+
+    public class QueryableProvider<TCurrent, TSource> : FreeSqlQueryProvider, IOrderedQueryable<TCurrent>
     {
         Expression _expression;
         IQueryProvider _provider;
@@ -54,7 +60,7 @@ namespace FreeSql.Extensions.Linq
         public IQueryProvider Provider => _provider;
     }
 
-    public class QueryProvider<TCurrent, TSource> : IQueryProvider where TSource : class
+    public class QueryProvider<TCurrent, TSource> : FreeSqlQueryProvider, IQueryProvider
     {
         Select1Provider<TSource> _select;
         Expression _oldExpression;
@@ -221,40 +227,40 @@ namespace FreeSql.Extensions.Linq
                         return throwCallExp(CoreStrings.Not_Support);
 
                     case "Join":
-                        if (callExp.Arguments.Count == 5)
-                        {
-                            var arg2 = (callExp.Arguments[2] as UnaryExpression)?.Operand as LambdaExpression;
-                            var arg3 = (callExp.Arguments[3] as UnaryExpression)?.Operand as LambdaExpression;
-                            var arg4 = (callExp.Arguments[4] as UnaryExpression)?.Operand as LambdaExpression;
-                            FreeSqlExtensionsLinqSql.InternalJoin2(_select, arg2, arg3, arg4);
-                            _select._selectExpression = arg4.Body;
-                            break;
-                        }
+                        //if (callExp.Arguments.Count == 5)
+                        //{
+                        //    var arg2 = (callExp.Arguments[2] as UnaryExpression)?.Operand as LambdaExpression;
+                        //    var arg3 = (callExp.Arguments[3] as UnaryExpression)?.Operand as LambdaExpression;
+                        //    var arg4 = (callExp.Arguments[4] as UnaryExpression)?.Operand as LambdaExpression;
+                        //    FreeSqlExtensionsLinqSql.InternalJoin2(_select, arg2, arg3, arg4);
+                        //    _select._selectExpression = arg4.Body;
+                        //    break;
+                        //}
 
                         return throwCallExp($" 不支持 {callExp.Arguments.Count}个参数的方法");
 
                     case "GroupJoin":
-                        if (callExp.Arguments.Count == 5)
-                        {
-                            var arg2 = (callExp.Arguments[2] as UnaryExpression)?.Operand as LambdaExpression;
-                            var arg3 = (callExp.Arguments[3] as UnaryExpression)?.Operand as LambdaExpression;
-                            var arg4 = (callExp.Arguments[4] as UnaryExpression)?.Operand as LambdaExpression;
-                            FreeSqlExtensionsLinqSql.InternalJoin2(_select, arg2, arg3, arg4);
-                            _select._selectExpression = arg4.Body;
-                            break;
-                        }
+                        //if (callExp.Arguments.Count == 5)
+                        //{
+                        //    var arg2 = (callExp.Arguments[2] as UnaryExpression)?.Operand as LambdaExpression;
+                        //    var arg3 = (callExp.Arguments[3] as UnaryExpression)?.Operand as LambdaExpression;
+                        //    var arg4 = (callExp.Arguments[4] as UnaryExpression)?.Operand as LambdaExpression;
+                        //    FreeSqlExtensionsLinqSql.InternalJoin2(_select, arg2, arg3, arg4);
+                        //    _select._selectExpression = arg4.Body;
+                        //    break;
+                        //}
 
                         return throwCallExp($" 不支持 {callExp.Arguments.Count}个参数的方法");
 
                     case "SelectMany":
-                        if (callExp.Arguments.Count == 3)
-                        {
-                            var arg1 = (callExp.Arguments[1] as UnaryExpression)?.Operand as LambdaExpression;
-                            var arg2 = (callExp.Arguments[2] as UnaryExpression)?.Operand as LambdaExpression;
-                            FreeSqlExtensionsLinqSql.InternalSelectMany2(_select, arg1, arg2);
-                            _select._selectExpression = arg2.Body;
-                            break;
-                        }
+                        //if (callExp.Arguments.Count == 3)
+                        //{
+                        //    var arg1 = (callExp.Arguments[1] as UnaryExpression)?.Operand as LambdaExpression;
+                        //    var arg2 = (callExp.Arguments[2] as UnaryExpression)?.Operand as LambdaExpression;
+                        //    FreeSqlExtensionsLinqSql.InternalSelectMany2(_select, arg1, arg2);
+                        //    _select._selectExpression = arg2.Body;
+                        //    break;
+                        //}
 
                         return throwCallExp($" 不支持 {callExp.Arguments.Count}个参数的方法");
 

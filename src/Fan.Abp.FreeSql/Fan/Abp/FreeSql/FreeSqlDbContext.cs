@@ -1,11 +1,7 @@
-﻿using System;
-using System.Data;
-using System.Data.Common;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Fan.Abp.FreeSql.Infrastructure;
 using FreeSql;
-using Volo.Abp.DependencyInjection;
 
 namespace Fan.Abp.FreeSql
 {
@@ -23,14 +19,16 @@ namespace Fan.Abp.FreeSql
 
         }
 
-        private DatabaseFacade? _database;
+        #region Database
 
-        public IAbpLazyServiceProvider LazyServiceProvider { get; set; }
+        private DatabaseFacade? _database;
 
         public virtual DatabaseFacade Database
         {
             get { return this._database ??= new DatabaseFacade(this); }
         }
+
+        #endregion
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

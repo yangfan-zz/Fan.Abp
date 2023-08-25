@@ -54,7 +54,8 @@ public class HelloWorldService : ITransientDependency
         // 外部工作单元
         var count = await _userRepository.GetCountAsync();
 
-       var ff = await _userRepository.FindAsync(s => s.UserName!.Contains("a"));
+        var singleUser = await _userRepository.SingleAsync(s => s.UserName!.Contains("a"));
+        var ff = await _userRepository.FindAsync(s => s.UserName!.Contains("a"));
 
         var varu = await _userRepository.GetPagedListAsync(0,10,"Id");
 
